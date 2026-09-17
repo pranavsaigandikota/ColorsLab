@@ -4,7 +4,7 @@
 COLORS is a simple web application that allows users to manage their favorite colors. It provides a platform to log in, search for previously saved colors, and add new colors to a personalized list. This repository contains the source code organized for version control and deployment.
 
 ## Features
-- User Login: Secure access using user credentials.
+- User Login: Sign in with a username and password stored in the database (see Limitations).
 - Invalid-Login Handling: Error messaging for incorrect usernames or passwords.
 - Add Color: Users can add new favorite colors to their profiles.
 - Search Colors: Users can search their saved colors.
@@ -20,7 +20,7 @@ COLORS is a simple web application that allows users to manage their favorite co
 
 ## Repository Structure
 ```text
-colors-lamp/
+ColorsLab/
 ├── api/                   # Backend PHP API endpoints
 ├── database/              # SQL schema for database setup
 ├── public/                # Frontend static assets (HTML, CSS, JS, images)
@@ -36,12 +36,27 @@ colors-lamp/
 ## Setup Instructions
 
 ### Database Setup
-1. Open your MySQL client.
-2. Run the provided database schema file to set up the necessary tables:
+1. From the repository root, run the provided schema file:
    ```bash
    mysql -u root -p < database/schema.sql
    ```
-   *This sets up the `COP4331` database with the required `Users`, `Colors`, and `Contacts` tables.*
+   *This creates the `COP4331` database with the `Users`, `Colors`, and `Contacts` tables.*
+2. Create a MySQL user for the API to connect with. Open the MySQL shell (`mysql -u root -p`), choose your own username and password, and run:
+   ```sql
+   CREATE USER '<db-username>'@'localhost' IDENTIFIED BY '<db-password>';
+   GRANT SELECT, INSERT ON COP4331.* TO '<db-username>'@'localhost';
+   ```
+   These are the values you will enter in `api/config.php` in the Configuration step.
+
+### Creating a Login Account
+The app has no registration page, and no demo account is included. Add an account directly in the MySQL shell, replacing the placeholders with your own values:
+
+```sql
+INSERT INTO COP4331.Users (FirstName, LastName, Login, Password)
+VALUES ('<first-name>', '<last-name>', '<login>', '<password>');
+```
+
+Sign in on the login page with the `<login>` and `<password>` you chose. Passwords are stored and compared as plain text (see Limitations).
 
 ### Configuration
 
@@ -70,6 +85,8 @@ cd /opt
 git clone https://github.com/pranavsaigandikota/ColorsLab.git colorslab-source
 cd colorslab-source
 ```
+
+Set up the database and a login account as described in Database Setup and Creating a Login Account above.
 
 Create the private database configuration:
 
@@ -112,8 +129,11 @@ The frontend communicates with the backend using these endpoints located in `/LA
 - **Add Color (`AddColor.php`)**: Adds a new color to the authenticated user's list.
 - **Search Colors (`SearchColors.php`)**: Returns a list of colors matching the search query for the authenticated user.
 
+The frontend builds these URLs from the `urlBase` constant at the top of `public/js/code.js`, which is set to the relative path `/LAMPAPI`. No server address needs to be changed as long as the API is deployed to `/var/www/html/LAMPAPI/`. If you deploy the API to a different path, update `urlBase` to match.
+
 ## Assumptions and Limitations
 - **Educational Context**: This application is built for an educational lab environment and assumes the usage of a specific directory structure (`/LAMPAPI/`).
+- **No Registration**: There is no sign-up page. Accounts must be created directly in MySQL (see Creating a Login Account).
 - **Security Limitation**: This is an educational lab application. Before any real-world use, it must be upgraded to include password hashing, HTTPS enforcement, stronger input validation, and production-grade secret management. The current implementation stores passwords in plain text for demonstration purposes only.
 
 ## AI Assistance Disclosure
@@ -128,6 +148,10 @@ This project was developed with assistance from generative AI tools:
 - **Dates**: September 15-16, 2026
 - **Scope**: README documentation corrections and DigitalOcean deployment instructions.
 - **Nature of use**: Clarified the configuration and DigitalOcean deployment instructions and corrected wording.
+- **Tool**: Claude Code (Claude Opus 5.5)
+- **Dates**: September 17, 2026
+- **Scope**: Database account setup and README corrections.
+- **Nature of use**: Documented the MySQL user and login account setup, documented the frontend API path, and corrected inaccurate README wording.
 
 All AI-generated code was reviewed, tested, and modified to meet
 assignment requirements. Final implementation reflects my understanding
