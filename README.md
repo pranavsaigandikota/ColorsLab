@@ -40,7 +40,7 @@ ColorsLab/
    ```bash
    mysql -u root -p < database/schema.sql
    ```
-   *This creates the `COP4331` database with the `Users`, `Colors`, and `Contacts` tables.*
+   *This creates the `COP4331` database with the `Users` and `Colors` tables used by the application.*
 2. Create a MySQL user for the API to connect with. Open the MySQL shell (`mysql -u root -p`), choose your own username and password, and run:
    ```sql
    CREATE USER '<db-username>'@'localhost' IDENTIFIED BY '<db-password>';
@@ -119,9 +119,19 @@ find /var/www/html -type f ! -name config.php -exec chmod 644 {} \;
 chmod 640 /var/www/html/LAMPAPI/config.php
 ```
 
-Open the configured DigitalOcean server URL in a browser to access the application.
-
 GitHub hosts the version-controlled source code; DigitalOcean hosts and executes the PHP/MySQL application.
+
+## Running and Accessing the Application
+
+Apache and MySQL start automatically on the droplet, so the application is running as soon as the files are deployed. To use it:
+
+1. Open `http://<server-ip-address>/` in a web browser.
+2. Sign in with the login and password you created in Creating a Login Account.
+3. On the colors page, type a color name and select **Add Color** to save it.
+4. Type part of a color name and select **Search Color** to list your matching saved colors.
+5. Select **Log Out** to return to the login page.
+
+If login fails with valid credentials, check that the values in `/var/www/html/LAMPAPI/config.php` match the MySQL user from Database Setup.
 
 ## API Endpoint Summary
 The frontend communicates with the backend using these endpoints located in `/LAMPAPI/`:
@@ -142,16 +152,18 @@ This project was developed with assistance from generative AI tools:
 
 - **Tool**: Claude Code (Claude Opus 5.5)
 - **Dates**: September 14-15, 2026
-- **Scope**: Repository structure, PHP API development, HTML/CSS frontend UI.
+- **Scope**: Repository structure, PHP API development, and HTML/CSS frontend UI.
 - **Nature of use**: Generated initial PHP backend scripts for API endpoints, helped with syntax, informed the UI layout and styles, and formatted the README. The generated work was reviewed and modified.
+
 - **Tool**: Claude Code (Claude Opus 5.5)
 - **Dates**: September 15-16, 2026
 - **Scope**: README documentation corrections and DigitalOcean deployment instructions.
 - **Nature of use**: Clarified the configuration and DigitalOcean deployment instructions and corrected wording.
+
 - **Tool**: Claude Code (Claude Opus 5.5)
 - **Dates**: September 17, 2026
-- **Scope**: Database account setup and README corrections.
-- **Nature of use**: Documented the MySQL user and login account setup, documented the frontend API path, and corrected inaccurate README wording.
+- **Scope**: Application access instructions, README corrections, and database schema cleanup.
+- **Nature of use**: Removed the unused `Contacts` table from the schema, documented the database setup steps for the MySQL user and a login account, documented the frontend API path, added the running and access instructions, and corrected inaccurate README wording.
 
 All AI-generated code was reviewed, tested, and modified to meet
 assignment requirements. Final implementation reflects my understanding

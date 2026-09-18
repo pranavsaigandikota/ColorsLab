@@ -18,13 +18,3 @@ CREATE TABLE IF NOT EXISTS `Colors` (
   `UserID` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `Contacts` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `FirstName` varchar(50) NOT NULL DEFAULT '',
-  `LastName` varchar(50) NOT NULL DEFAULT '',
-  `Email` varchar(50) NOT NULL DEFAULT '',
-  `Phone` varchar(50) NOT NULL DEFAULT '',
-  `UserID` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
