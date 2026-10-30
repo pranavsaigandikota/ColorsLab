@@ -1,0 +1,111 @@
+@startuml
+title Colors Web Application - Class Diagram
+skinparam classAttributeIconSize 0
+hide empty members
+
+package "Frontend (public/)" {
+  class "index.html" as IndexPage <<page>> {
+    loginName : input
+    loginPassword : input
+    loginResult : span
+  }
+
+  class "color.html" as ColorPage <<page>> {
+    searchText : input
+    colorText : input
+    colorSearchResult : span
+    colorAddResult : span
+    colorList : p
+  }
+
+  class "code.js" as CodeJs <<script>> {
+    - urlBase : String = "/LAMPAPI"
+    - extension : String = "php"
+    - userId : int
+    - firstName : String
+    - lastName : String
+    + doLogin()
+    + saveCookie()
+    + readCookie()
+    + doLogout()
+    + addColor()
+    + searchColor()
+  }
+}
+
+package "Backend API (api/)" {
+  class "Login.php" as LoginPhp <<endpoint>> {
+    + getRequestInfo()
+    + sendResultInfoAsJson(obj)
+    + returnWithError(err)
+    + returnWithInfo(firstName, lastName, id)
+  }
+
+  class "AddColor.php" as AddColorPhp <<endpoint>> {
+    + getRequestInfo()
+    + sendResultInfoAsJson(obj)
+    + returnWithError(err)
+  }
+
+  class "SearchColors.php" as SearchColorsPhp <<endpoint>> {
+    + getRequestInfo()
+    + sendResultInfoAsJson(obj)
+    + returnWithError(err)
+    + returnWithInfo(searchResults)
+  }
+
+  class "db.php" as DbPhp <<connection>> {
+    returns mysqli connection
+  }
+
+  class "config.php" as ConfigPhp <<git-ignored>> {
+    host
+    username
+    password
+    database
+  }
+}
+
+package "Database (MySQL: COP4331)" {
+  class "Users" as Users <<table>> {
+    {field} ID : int(11) [PK]
+    {field} DateCreated : datetime
+    {field} DateLastLoggedIn : datetime
+    {field} FirstName : varchar(50)
+    {field} LastName : varchar(50)
+    {field} Login : varchar(50)
+    {field} Password : varchar(50)
+  }
+
+  class "Colors" as Colors <<table>> {
+    {field} ID : int(11) [PK]
+    {field} Name : varchar(50)
+    {field} UserID : int(11)
+  }
+}
+
+' Frontend: pages load and call code.js
+IndexPage ..> CodeJs : loads, onclick doLogin()
+ColorPage ..> CodeJs : loads, readCookie(), addColor(),\nsearchColor(), doLogout()
+IndexPage ..> ColorPage : redirect after login
+ColorPage ..> IndexPage : redirect on logout\nor missing cookie
+
+' code.js sends JSON over XMLHttpRequest POST
+CodeJs ..> LoginPhp : POST /LAMPAPI/Login.php
+CodeJs ..> AddColorPhp : POST /LAMPAPI/AddColor.php
+CodeJs ..> SearchColorsPhp : POST /LAMPAPI/SearchColors.php
+
+' Backend: every endpoint opens its connection through db.php
+LoginPhp ..> DbPhp : require
+AddColorPhp ..> DbPhp : require
+SearchColorsPhp ..> DbPhp : require
+DbPhp ..> ConfigPhp : require
+
+' Backend to database
+LoginPhp ..> Users : SELECT
+AddColorPhp ..> Colors : INSERT
+SearchColorsPhp ..> Colors : SELECT
+
+' Logical relationship only: schema.sql defines no FOREIGN KEY
+Users "1" -- "0..*" Colors : owns (via UserID)
+@enduml

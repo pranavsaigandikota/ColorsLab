@@ -1,0 +1,57 @@
+@startuml
+title Colors Web Application - Activity Diagram
+start
+
+:User opens index.html (login page);
+:Enter username and password;
+:Click "Do It" -> doLogin();
+:POST /LAMPAPI/Login.php\n{login, password};
+:Login.php runs\nSELECT ID, firstName, lastName FROM Users\nWHERE Login=? AND Password=?;
+
+if (Matching user row found?) then (yes)
+  :Return {id, firstName, lastName, error:""};
+  :saveCookie()\n(browser cookie, expires in 20 minutes);
+  :Redirect to color.html;
+else (no)
+  :Return {id:0, error:"No Records Found"};
+  :Show "User/Password combination incorrect";
+  stop
+endif
+
+:color.html loads -> readCookie();
+
+if (userId cookie present?) then (no)
+  :Redirect to index.html;
+  stop
+else (yes)
+endif
+
+repeat
+  switch (User action?)
+  case (Add Color)
+    :Type color name, click "Add Color";
+    :POST /LAMPAPI/AddColor.php\n{color, userId};
+    :INSERT INTO Colors (UserId, Name);
+    :Show "Color has been added";
+  case (Search Color)
+    :Type search text, click "Search Color";
+    :POST /LAMPAPI/SearchColors.php\n{search, userId};
+    :SELECT Name FROM Colors\nWHERE Name LIKE ? AND UserID=?;
+    if (Any matching colors?) then (yes)
+      :Return {results:[...], error:""};
+      :List matching colors in the page;
+    else (no)
+      :Return {error:"No Records Found"}\n(no "results" field);
+      note right
+        code.js reads jsonObject.results.length,
+        so the list is not updated
+      end note
+    endif
+  case (Log Out)
+    :doLogout(): expire the cookie;
+  endswitch
+repeat while (Logged out?) is (no) not (yes)
+
+:Redirect to index.html;
+stop
+@enduml

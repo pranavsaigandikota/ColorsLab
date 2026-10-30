@@ -1,9 +1,11 @@
 # COLORS LAMP Application
 
 ## Description
+
 COLORS is a simple web application that allows users to manage their favorite colors. It provides a platform to log in, search for previously saved colors, and add new colors to a personalized list. This repository contains the source code organized for version control and deployment.
 
 ## Features
+
 - User Login: Sign in with a username and password stored in the database (see Limitations).
 - Invalid-Login Handling: Error messaging for incorrect usernames or passwords.
 - Add Color: Users can add new favorite colors to their profiles.
@@ -11,6 +13,7 @@ COLORS is a simple web application that allows users to manage their favorite co
 - Per-User Data: Each user's color list is isolated and linked exclusively to their account.
 
 ## Technologies Used
+
 - HTML, CSS, JavaScript (Frontend)
 - PHP (Backend API)
 - MySQL (Database)
@@ -19,6 +22,7 @@ COLORS is a simple web application that allows users to manage their favorite co
 - Git/GitHub (Version Control)
 
 ## Repository Structure
+
 ```text
 ColorsLab/
 ├── api/                   # Backend PHP API endpoints
@@ -30,17 +34,19 @@ ColorsLab/
 ```
 
 ## Prerequisites
+
 - A LAMP stack environment (Linux, Apache, MySQL, PHP) configured.
 - Git installed on your system.
 
 ## Setup Instructions
 
 ### Database Setup
+
 1. From the repository root, run the provided schema file:
    ```bash
    mysql -u root -p < database/schema.sql
    ```
-   *This creates the `COP4331` database with the `Users` and `Colors` tables used by the application.*
+   _This creates the `COP4331` database with the `Users` and `Colors` tables used by the application._
 2. Create a MySQL user for the API to connect with. Open the MySQL shell (`mysql -u root -p`), choose your own username and password, and run:
    ```sql
    CREATE USER '<db-username>'@'localhost' IDENTIFIED BY '<db-password>';
@@ -49,6 +55,7 @@ ColorsLab/
    These are the values you will enter in `api/config.php` in the Configuration step.
 
 ### Creating a Login Account
+
 The app has no registration page, and no demo account is included. Add an account directly in the MySQL shell, replacing the placeholders with your own values:
 
 ```sql
@@ -134,7 +141,9 @@ Apache and MySQL start automatically on the droplet, so the application is runni
 If login fails with valid credentials, check that the values in `/var/www/html/LAMPAPI/config.php` match the MySQL user from Database Setup.
 
 ## API Endpoint Summary
+
 The frontend communicates with the backend using these endpoints located in `/LAMPAPI/`:
+
 - **Login (`Login.php`)**: Authenticates a user and returns their user ID.
 - **Add Color (`AddColor.php`)**: Adds a new color to the authenticated user's list.
 - **Search Colors (`SearchColors.php`)**: Returns a list of colors matching the search query for the authenticated user.
@@ -142,6 +151,7 @@ The frontend communicates with the backend using these endpoints located in `/LA
 The frontend builds these URLs from the `urlBase` constant at the top of `public/js/code.js`, which is set to the relative path `/LAMPAPI`. No server address needs to be changed as long as the API is deployed to `/var/www/html/LAMPAPI/`. If you deploy the API to a different path, update `urlBase` to match.
 
 ## Assumptions and Limitations
+
 - **Educational Context**: This application is built for an educational lab environment and assumes the usage of a specific directory structure (`/LAMPAPI/`).
 - **No Registration**: There is no sign-up page. Accounts must be created directly in MySQL (see Creating a Login Account).
 - **Security Limitation**: This is an educational lab application. Before any real-world use, it must be upgraded to include password hashing, HTTPS enforcement, stronger input validation, and production-grade secret management. The current implementation stores passwords in plain text for demonstration purposes only.
@@ -165,8 +175,15 @@ This project was developed with assistance from generative AI tools:
 - **Scope**: Application access instructions, README corrections, and database schema cleanup.
 - **Nature of use**: Removed the unused `Contacts` table from the schema, documented the database setup steps for the MySQL user and a login account, documented the frontend API path, added the running and access instructions, and corrected inaccurate README wording.
 
+- **Tool**: Claude Code (Claude Opus 5.5)
+- **Dates**: October 30, 2026
+- **Scope**: UML Diagram Creation Assistance
+- **Nature of use**: Used to help with creating UML diagrams using codebase built with planttext to create the diagram. Verified all diagrams to make sure they align with the actual code.
+
 All AI-generated code was reviewed, tested, and modified to meet
 assignment requirements. Final implementation reflects my understanding
 of the concepts.
+
 ## License
+
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
