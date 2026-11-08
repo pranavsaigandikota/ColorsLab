@@ -5,3 +5,5 @@ api/config.php
 .vscode/
 *.log
 *.tmp
+node_modules/
+package-lock.json
