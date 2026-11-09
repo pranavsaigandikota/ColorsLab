@@ -180,6 +180,11 @@ This project was developed with assistance from generative AI tools:
 - **Scope**: UML Diagram Creation Assistance
 - **Nature of use**: Used to help with creating UML diagrams using codebase built with planttext to create the diagram. Verified all diagrams to make sure they align with the actual code.
 
+- **Tool**: Claude Code (Claude Opus 5.5)
+- **Dates**: November 7-8, 2026
+- **Scope**: GitHub Actions CI Lint Workflow and Frontend Code Cleanup
+- **Nature of use**: Used to help set up GitHub Actions lint workflow for HTML, CSS, and JavaScript with HTMLHint, Stylelint, and ESLint configurations. Helped fix linting errors across HTML, CSS, and JS files, including fixing duplicate keys and switching var to let. Reviewed and verified all lint checks pass properly.
+
 All AI-generated code was reviewed, tested, and modified to meet
 assignment requirements. Final implementation reflects my understanding
 of the concepts.
