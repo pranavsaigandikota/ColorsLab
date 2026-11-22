@@ -150,6 +150,29 @@ The frontend communicates with the backend using these endpoints located in `/LA
 
 The frontend builds these URLs from the `urlBase` constant at the top of `public/js/code.js`, which is set to the relative path `/LAMPAPI`. No server address needs to be changed as long as the API is deployed to `/var/www/html/LAMPAPI/`. If you deploy the API to a different path, update `urlBase` to match.
 
+## Automated Tests and CI
+
+Node.js 22 and npm are used only for linting and Jest tests. The application runs on Apache, PHP, and MySQL, including during integration tests.
+
+- `tests/unit/colors.test.cjs` tests the actual frontend script in jsdom with mocked HTTP requests: add-color JSON payloads, success and error messages, search result rendering, and invalid-login handling.
+- `tests/integration/api.test.cjs` sends real HTTP requests to PHP endpoints served by Apache with a disposable MySQL database. It checks login response structures, incorrect passwords, adding and finding a persisted color, per-user separation, and searches without matches. No API or database is mocked in these tests.
+
+Install Node.js 22 and Docker with Compose v2 (start Docker Desktop on Windows), then run from the repository root:
+
+```bash
+npm ci
+npm run lint
+docker compose -p colorslab-tests -f compose.test.yml up --build --wait --wait-timeout 180
+npm test
+docker compose -p colorslab-tests -f compose.test.yml down --volumes
+```
+
+The test stack uses port 8080 and its own database containers. The sample credentials under `tests/support/` are disposable test fixtures. The stack uses the real `database/schema.sql` and does not connect to the deployed database or use `api/config.php`. MySQL test data is discarded when the containers are removed. Run the cleanup command even if a test fails.
+
+Run `npm run test:unit` without Docker for frontend tests only, or `npm run test:integration` with the test stack running for API tests only. `npm test` runs both suites and fails if the API is unavailable.
+
+The **Lint and tests** GitHub Actions workflow runs on every push and pull request. It installs locked dependencies with `npm ci`, runs HTML/CSS/JavaScript linting, checks PHP syntax, starts the same LAMP test stack, and runs both Jest suites. Failed jobs show test output and container logs in the Actions tab; test containers are always cleaned up. Before submitting a commit URL, confirm that both the lint and test jobs pass for that commit in GitHub Actions.
+
 ## Assumptions and Limitations
 
 - **Educational Context**: This application is built for an educational lab environment and assumes the usage of a specific directory structure (`/LAMPAPI/`).
@@ -184,6 +207,11 @@ This project was developed with assistance from generative AI tools:
 - **Dates**: November 7-8, 2026
 - **Scope**: GitHub Actions CI Lint Workflow and Frontend Code Cleanup
 - **Nature of use**: Used to help set up GitHub Actions lint workflow for HTML, CSS, and JavaScript with HTMLHint, Stylelint, and ESLint configurations. Helped fix linting errors across HTML, CSS, and JS files, including fixing duplicate keys and switching var to let. Reviewed and verified all lint checks pass properly.
+
+- **Tool**: OpenAI Codex
+- **Dates**: November 22, 2026
+- **Scope**: Assignment 5 automated tests and CI integration.
+- **Nature of use**: Assisted with rebasing onto main, adding Jest frontend unit tests and HTTP integration tests against an isolated Apache/PHP/MySQL stack, extending GitHub Actions to run lint and tests, locking npm dependencies, documenting test commands, and running validation and debugging.
 
 All AI-generated code was reviewed, tested, and modified to meet
 assignment requirements. Final implementation reflects my understanding

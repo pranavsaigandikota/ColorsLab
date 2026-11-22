@@ -1,0 +1,7 @@
+.git
+node_modules
+coverage
+api/config.php
+.env
+.env.*
+*.log
